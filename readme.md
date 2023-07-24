@@ -22,8 +22,9 @@
       ...
     ...
 ```
-## 支持模型框架
-|推理格式               | 说明                                 |
+## 支持模型类型说明
+Triton推理服务支持多种深度学习框架的模型文件推理，其对应于模型配置文件中的“platform”字段。字段说明介绍如下：
+|模型类型               | 说明                                 |
 |--------------------- |--------------------------------------|
 |tensorflow_graphdef   |TensorFlow深度学习框架graphdef模型格式  |
 |tensorflow_savedmodel |TensorFlow深度学习框架savedmodel模型格式|
@@ -32,7 +33,6 @@
 |onnxruntime_onnx      | Onnxruntime支持的onnx模型格式         |
 
 ## 数据类型
-
 下表显示Triton推理支持的张量数据类型。第一列对应于模型配置文件中的数据类型。接下来的四列显示了支持的模型框架相对应的数据类型。第六列标记为“API”，显示了TRITONSERVER C API、TRITONBACKEND C API、HTTP/REST协议和GRPC协议对应的数据类型。最后一列显示Python numpy库相对应的数据类型。
 
 |Model Config  |TensorRT      |TensorFlow    |ONNX Runtime  |PyTorch  |API      |NumPy         |
@@ -59,7 +59,6 @@ model_name
   ├── 1
   │   └── model.graphdef
   └── config.pbtxt
-
 ``` 
 #### 2、模型配置文件
 ```
@@ -130,7 +129,6 @@ model_name
   ├── 1
   │   └── model.pt
   └── config.pbtxt
-
 ``` 
 #### 2、模型配置文件
 ```
