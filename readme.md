@@ -31,7 +31,30 @@ Triton推理服务支持多种深度学习框架的模型文件推理，其对�
 |pytorch_libtorch      |Pytorch深度学习框架的模型格式           |
 |tensorrt_plan         |NVIDIA硬件支持的Tensorrt模型格式       |
 |onnxruntime_onnx      | Onnxruntime支持的onnx模型格式         |
+## max_batch_size配置说明
 
+## 模型的输入和输出
+每个模型输入和输出都包含名称、数据类型和形状大小。模型配置文件的输入和输出配置必须与模型结构定义的属性匹配。模型定义属性包含输入和输出的名称、数据类型和维度大小，配置需匹配如下格式：
+```
+ input [
+    {
+      name: "input0"
+      data_type: TYPE_FP32
+      dims: [-1]
+    },
+    {
+      name: "input1"
+      data_type: TYPE_FP32
+      dims: [-1]
+    }
+  ]
+  output [
+    {
+      name: "output0"
+      data_type: TYPE_FP32
+      dims: [-1]
+    }
+ ```   
 ## 数据类型
 下表显示Triton推理支持的张量数据类型。第一列对应于模型配置文件中的数据类型。接下来的四列显示了支持的模型框架相对应的数据类型。第六列标记为“API”，显示了TRITONSERVER C API、TRITONBACKEND C API、HTTP/REST协议和GRPC协议对应的数据类型。最后一列显示Python numpy库相对应的数据类型。
 
