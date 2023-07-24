@@ -22,7 +22,10 @@
       ...
     ...
 ```
-## 支持模型类型说明
+## 模型文件配置说明
+Triton推理需要模型配置文件，详情可参考[参数配置](https://docs.nvidia.com/deeplearning/triton-inference-server/user-guide/docs/user_guide/model_configuration.html)。以下是对各个字段的介绍。
+
+### 1、支持模型类型说明
 Triton推理服务支持多种深度学习框架的模型文件推理，其对应于模型配置文件中的“platform”字段。字段说明介绍如下：
 |模型类型               | 说明                                 |
 |--------------------- |--------------------------------------|
@@ -31,31 +34,31 @@ Triton推理服务支持多种深度学习框架的模型文件推理，其对�
 |pytorch_libtorch      |Pytorch深度学习框架的模型格式           |
 |tensorrt_plan         |NVIDIA硬件支持的Tensorrt模型格式       |
 |onnxruntime_onnx      | Onnxruntime支持的onnx模型格式         |
-## max_batch_size配置说明
+### 2、max_batch_size配置说明
 
-## 模型的输入和输出
+### 3、模型的输入和输出
 每个模型输入和输出都包含名称、数据类型和形状大小。模型配置文件的输入和输出配置必须与模型结构定义的属性匹配。模型定义属性包含输入和输出的名称、数据类型和维度大小，配置需匹配如下格式：
 ```
- input [
-    {
-      name: "input0"
-      data_type: TYPE_FP32
-      dims: [-1]
-    },
-    {
-      name: "input1"
-      data_type: TYPE_FP32
-      dims: [-1]
-    }
-  ]
-  output [
-    {
-      name: "output0"
-      data_type: TYPE_FP32
-      dims: [-1]
-    }
+input [
+   {
+     name: "input0"
+     data_type: TYPE_FP32
+     dims: [-1]
+   },
+   {
+     name: "input1"
+     data_type: TYPE_FP32
+     dims: [-1]
+   }
+ ]
+ output [
+   {
+     name: "output0"
+     data_type: TYPE_FP32
+     dims: [-1]
+   }
  ```   
-## 数据类型
+### 4、数据类型
 下表显示Triton推理支持的张量数据类型。第一列对应于模型配置文件中的数据类型。接下来的四列显示了支持的模型框架相对应的数据类型。第六列标记为“API”，显示了TRITONSERVER C API、TRITONBACKEND C API、HTTP/REST协议和GRPC协议对应的数据类型。最后一列显示Python numpy库相对应的数据类型。
 
 |Model Config  |TensorRT      |TensorFlow    |ONNX Runtime  |PyTorch  |API      |NumPy         |
@@ -78,168 +81,168 @@ Triton推理服务支持多种深度学习框架的模型文件推理，其对�
 ### Tensorflow graphdef示例
 #### 1、模型文件结构
 ```
-model_name
-  ├── 1
-  │   └── model.graphdef
-  └── config.pbtxt
+ model_name
+   ├── 1
+   │   └── model.graphdef
+   └── config.pbtxt
 ``` 
 #### 2、模型配置文件
 ```
-  platform: "tensorflow_graphdef"
-  max_batch_size: 8
-  input [
-    {
-      name: "input0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    },
-    {
-      name: "input1"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
-  output [
-    {
-      name: "output0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
+ platform: "tensorflow_graphdef"
+ max_batch_size: 8
+ input [
+   {
+     name: "input0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   },
+   {
+     name: "input1"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
+ output [
+   {
+     name: "output0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
 ```
 
 ### Tensorflow savedmodel示例
 #### 1、模型文件结构
 ```
-model_name
-   ├── 1
-   │   └── model.savedmodel
-   │          └── saved_model.pb
-   │          ├── variables
-   │                └── variables.data-00000-of-00001
-   │                ├── variables.index
-   ├── config.pbtxt
+ model_name
+    ├── 1
+    │   └── model.savedmodel
+    │          └── saved_model.pb
+    │          ├── variables
+    │                └── variables.data-00000-of-00001
+    │                ├── variables.index
+    ├── config.pbtxt
 ``` 
 #### 2、模型配置文件
 ```
-  platform: "tensorflow_savedmodel"
-  max_batch_size: 8
-  input [
-    {
-      name: "input0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    },
-    {
-      name: "input1"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
-  output [
-    {
-      name: "output0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
+ platform: "tensorflow_savedmodel"
+ max_batch_size: 8
+ input [
+   {
+     name: "input0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   },
+   {
+     name: "input1"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
+ output [
+   {
+     name: "output0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
 ```
 
 ### Pytorch示例
 #### 1、模型文件结构
 ```
 model_name
-  ├── 1
-  │   └── model.pt
-  └── config.pbtxt
+   ├── 1
+   │   └── model.pt
+   └── config.pbtxt
 ``` 
 #### 2、模型配置文件
 ```
-  platform: "pytorch_libtorch"
-  max_batch_size: 8
-  input [
-    {
-      name: "input0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    },
-    {
-      name: "input1"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
-  output [
-    {
-      name: "output0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
+ platform: "pytorch_libtorch"
+ max_batch_size: 8
+ input [
+   {
+     name: "input0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   },
+   {
+     name: "input1"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
+ output [
+   {
+     name: "output0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
 ```
 
 ### TensorRT示例
 #### 1、模型文件结构
 ```
-modle_name
-  ├── 1
-  │   └── model.plan
-  └── config.pbtxt
+ modle_name
+   ├── 1
+   │   └── model.plan
+   └── config.pbtxt
 ``` 
 #### 2、模型配置文件
 ```
-  platform: "tensorrt_plan"
-  max_batch_size: 8
-  input [
-    {
-      name: "input0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    },
-    {
-      name: "input1"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
-  output [
-    {
-      name: "output0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
+ platform: "tensorrt_plan"
+ max_batch_size: 8
+ input [
+   {
+     name: "input0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   },
+   {
+     name: "input1"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
+ output [
+   {
+     name: "output0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
 ```
 
 ### ONNX示例
 #### 1、模型文件结构
 ```
-modle_name
-  ├── 1
-  │   └── model.onnx
-  └── config.pbtxt
+ modle_name
+   ├── 1
+   │   └── model.onnx
+   └── config.pbtxt
 ``` 
 #### 2、模型配置文件
 ```
-  platform: "onnxruntime_onnx"
-  max_batch_size: 8
-  input [
-    {
-      name: "input0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    },
-    {
-      name: "input1"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
-  output [
-    {
-      name: "output0"
-      data_type: TYPE_FP32
-      dims: [ 16 ]
-    }
-  ]
+ platform: "onnxruntime_onnx"
+ max_batch_size: 8
+ input [
+   {
+     name: "input0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   },
+   {
+     name: "input1"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
+ output [
+   {
+     name: "output0"
+     data_type: TYPE_FP32
+     dims: [ 16 ]
+   }
+ ]
 ```
