@@ -35,7 +35,47 @@ Triton推理服务支持多种深度学习框架的模型文件推理，其对�
 |tensorrt_plan         |NVIDIA硬件支持的Tensorrt模型格式       |
 |onnxruntime_onnx      | Onnxruntime支持的onnx模型格式         |
 ### 2、max_batch_size配置说明
-
+max_batch_size属性表示模型推理支持的最大批处理大小。模型需满足批处理维度是第一个维度，并且模型的所有输入和输出都具有该批处理维度，同时满足上述条件便可在配置文件中添加批处理属性。这种情况下max_batch_size为大于或等于1的值。对于不支持批处理，或者不支持上述特定方式的批处理的模型，该属性必须设置为零。
+##### 支持批处理模型文件配置
+```
+  #支持最大(64,32,32,3)的批处理模型输入推理，输出维度最大为(64,10)，批处理范围为[1-64]的整数
+  platform: "tensorrt_plan"
+  max_batch_size: 64
+  input [
+    {
+      name: "input0"
+      data_type: TYPE_FP32
+      dims: [32,32,3]
+    }
+  ]
+  output [
+    {
+      name: "output0"
+      data_type: TYPE_FP32
+      dims: [10]
+    }
+  ]
+```
+##### 不支持批处理模型文件配置
+```
+  #(32,32,3)模型推理输入，输出维度为(10)
+  platform: "tensorrt_plan"
+  max_batch_size: 0
+  input [
+    {
+      name: "input0"
+      data_type: TYPE_FP32
+      dims: [32,32,3]
+    }
+  ]
+  output [
+    {
+      name: "output0"
+      data_type: TYPE_FP32
+      dims: [10]
+    }
+  ]
+```
 ### 3、模型的输入和输出
 模型配置文件的输入和输出配置必须与模型结构定义的属性相匹配。模型定义属性包含输入和输出的名称、数据类型和维度大小，配置需定义如下格式：
 ```
@@ -77,6 +117,14 @@ input [
 |TYPE_FP64     |              |DT_DOUBLE     |DOUBLE        |kDouble  |FP64     |float64       |
 |TYPE_STRING   |              |DT_STRING     |STRING        |         |BYTES    |dtype(object) |
 |TYPE_BF16     |              |              |              |         |BF16     |              |
+## 模型配置文件示例展示
+### 示例说明
+##### 1、“model_name”模型文件名称可以修改，“model_name”目录下的“1”为此模型的版本号，必须为数字。
+##### 2、版本目录（如示例中“1”目录）下模型文件名称需与示例中的名称保持一致，例如TensorRT模型文件需命名为“model.plan”。
+##### 3、模型目录里可存储多个此模型版本，但推理服务只加载最新版本号的模型权重，比如存在1,3,7三个版本，推理服务只加载版本7的模型权重。
+##### 4、“config.pbtxt”文件为模型配置文件，文件名称不能修改。配置信息请参考上面内容。
+##### 5、模型配置文件中的“input”和“output”中的参数个数是不固定的，需对应模型结构中的输入和输出数量。
+##### 6、模型配置文件中的“dims”参数为模型输入和输出的维度大小。
 
 ### Tensorflow graphdef示例
 #### 1、模型文件结构
@@ -94,12 +142,12 @@ input [
    {
      name: "input0"
      data_type: TYPE_FP32
-     dims: [ 16 ]
+     dims: [224,224,3]
    },
    {
      name: "input1"
      data_type: TYPE_FP32
-     dims: [ 16 ]
+     dims: [32,32]
    }
  ]
  output [
